@@ -65,7 +65,8 @@ fun ActividadPrincipalScreen(
     onGuardarNombre: (String) -> Unit,
     onNavigate: () -> Unit
 ) {
-    var nombre by remember { mutableStateOf(nombreInicial) }
+    var nombre by remember { mutableStateOf("") } //Nombre ingresado en el campo de texto
+    var nombreGuardado by remember { mutableStateOf(nombreInicial) } //Nombre que se mostrará
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -87,12 +88,17 @@ fun ActividadPrincipalScreen(
         )
         //Botón para guardar nombre
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { onGuardarNombre(nombre) }) {
+        Button(onClick = {
+            onGuardarNombre(nombre)
+            nombreGuardado = nombre //Actualizar el nombre guardado
+            nombre = "" //Vaciar el campo de texto
+        }) {
             Text(text = "Guardar Nombre")
         }
+
         //Mostrar el nombre ingresado
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Nombre ingresado: $nombre")
+        Text(text = "Nombre ingresado: $nombreGuardado")
 
         //Botón para navegar a la configuración
         Spacer(modifier = Modifier.height(16.dp))
