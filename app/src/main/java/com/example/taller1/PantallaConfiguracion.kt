@@ -1,5 +1,6 @@
 package com.example.taller1
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,8 +20,28 @@ class PantallaConfiguracion : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //Recuperar el color de fondo almacenado en SharedPreferences
+        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val colorGuardado = sharedPref.getInt("color_fondo", Color.LightGray.hashCode())
+
         setContent {
-            PantallaConfiguracionScreen { navigateToMain() }
+            PantallaConfiguracionScreen(
+                backgroundColor = Color(colorGuardado),
+                onColorSelected = { nuevoColor ->
+                    guardarColor(nuevoColor)
+                },
+                onNavigate = { navigateToMain() }
+            )
+        }
+    }
+
+    //Guardar el color seleccionado en SharedPreferences
+    private fun guardarColor(color: Color) {
+        val sharedPref = getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putInt("color_fondo", color.hashCode()) //Guardar el valor del color como un entero
+            apply()
         }
     }
 
@@ -31,22 +52,48 @@ class PantallaConfiguracion : ComponentActivity() {
 }
 
 @Composable
-fun PantallaConfiguracionScreen(onNavigate: () -> Unit) {
-    var backgroundColor by remember { mutableStateOf(Color.LightGray) }
+fun PantallaConfiguracionScreen(
+    backgroundColor: Color,
+    onColorSelected: (Color) -> Unit,
+    onNavigate: () -> Unit
+) {
+    var colorFondo by remember { mutableStateOf(backgroundColor) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundColor)
+            .background(colorFondo)
     ) {
-        Button(onClick = {
-            backgroundColor = Color.Red // Cambia el color de fondo
-        }) {
-            Text(text = "Cambiar color de fondo")
-        }
+        Text(text = "Selecciona un color para el fondo")
+
+        //Botones para seleccionar diferentes colores
         Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            colorFondo = Color.Red
+            onColorSelected(Color.Red) //Guardar la selección
+        }) {
+            Text(text = "Rojo")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            colorFondo = Color.Blue
+            onColorSelected(Color.Blue) //Guardar la selección
+        }) {
+            Text(text = "Azul")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            colorFondo = Color.Green
+            onColorSelected(Color.Green) //Guardar la selección
+        }) {
+            Text(text = "Verde")
+        }
+
+        Spacer(modifier = Modifier.height(100.dp))
         Button(onClick = { onNavigate() }) {
             Text(text = "Volver a Inicio")
         }
@@ -56,5 +103,9 @@ fun PantallaConfiguracionScreen(onNavigate: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PantallaConfiguracionScreenPreview() {
-    PantallaConfiguracionScreen(onNavigate = {}) // No hace nada en el preview
+    PantallaConfiguracionScreen(
+        backgroundColor = Color.LightGray,
+        onColorSelected = {},
+        onNavigate = {}
+    )
 }
