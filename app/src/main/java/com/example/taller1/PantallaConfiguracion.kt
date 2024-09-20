@@ -94,7 +94,10 @@ fun PantallaConfiguracionScreen(
         }
 
         Spacer(modifier = Modifier.height(100.dp))
-        Button(onClick = { onNavigate() }) {
+        Button(onClick = {
+            colorFondo = Color.LightGray
+            onColorSelected(Color.LightGray) //Guardar la selección
+            onNavigate() }) {
             Text(text = "Volver a Inicio")
         }
     }
