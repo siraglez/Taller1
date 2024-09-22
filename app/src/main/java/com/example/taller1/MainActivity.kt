@@ -53,7 +53,7 @@ private fun calcularSaludo(): String {
     val hora = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     return when {
         hora in 0..11 -> "Buenos días"
-        hora in 12..17 -> "Buenas tardes"
+        hora in 12..19 -> "Buenas tardes"
         else -> "Buenas noches"
     }
 }
